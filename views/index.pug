@@ -2,3 +2,10 @@ extends layout
 
 block content
   h1= title
+  p Hello #{user ? user.displayName : 'Anonymous'}
+  if user
+    a(href='/logout') Logout
+  else
+    a(href='/auth/google') Login with Google
+
+  

@@ -6,9 +6,27 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import indexRouter from "./routes/index.js";
+import RedisStore from "connect-redis";
+import { createClient } from "redis";
+import session from 'express-session';
 
 // Constants
 const port = process.env.PORT || 3000;
+
+// Create Redis client 
+const redisClient = createClient({
+  url: process.env.REDIS_URL,
+});
+
+redisClient.connect().catch(console.error);
+redisClient.on ("connect", () => {
+  console.log("Redis Connect")
+})
+
+let redisStore = new RedisStore({
+  client: redisClient,
+  prefix: "GoogleOauth2"
+})
 
 // Create http server
 const app = express();
@@ -22,6 +40,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join("public")));
+
+app.use( 
+  session({
+    store: redisStore,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 }, // good for an hour
+  })
+);
 
 app.use("/", indexRouter);
 
