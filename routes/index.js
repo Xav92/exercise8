@@ -33,7 +33,7 @@ passport.use(
             };
           }
           // Store only user ID in Redis
-          await redisClient.setEx(profile.id, 3600, profile.id);
+          await redisClient.setEx(profile.id, 3600, JSON.stringify(user));
 
           return done(null, profile);
         } catch (err) {
