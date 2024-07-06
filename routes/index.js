@@ -43,20 +43,7 @@ passport.use(
     )
 );
 
-// // Serialize user into session (store only user ID)
-// passport.serializeUser((user, done) => {
-//   done(null, user.id); // Store the user ID
-// });
 
-// // Deserialize user from session (fetch user by ID from MongoDB)
-// passport.deserializeUser(async (id, done) => {
-//   try {
-//     const user = await getUserById(id);
-//     done(null, user);
-//   } catch (err) {
-//     done(err, null);
-//   }
-// });
 
 // Serialize user into session (store only user ID in session)
 passport.serializeUser((user, done) => {
